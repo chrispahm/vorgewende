@@ -1,0 +1,37 @@
+{
+  "name": "vorgewende",
+  "version": "1.0.0",
+  "description": "Modul zur automatischen Berechnung von Vorgewenden aus GeoJSON Teilflaechen / Module for automatic headland calculation from GeoJSON plots",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Christoph Pahmeyer",
+    "email": "christoph.pahmeyer@ilr.uni-bonn.de",
+    "url": "https://github.com/chrispahm"
+  },
+  "dependencies": {
+    "geojson-validation": ">0.1.6"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1",
+    "tape": "*"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "agriculture,",
+    "headland,",
+    "landwirtschaft,",
+    "vorgewende,",
+    "plot"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Toffi-123/vorgewende.git"
+  },
+  "homepage": "https://github.com/chrispahm/vorgewende",
+  "bugs": {
+    "url": "https://github.com/chrispahm/vorgewende/issues"
+  }
+}
