@@ -7,7 +7,7 @@
 const GJV = require("geojson-validation")
 
 module.exports = {
-	lineString: function (poly, angle, distance) {
+	lineString: function (poly, angle = 30, distance = 10) {
 		// first validate if polygon matches GeoJSON prerequisites
 		GJV.isPolygon(poly, function(valid, err) {
 			if (!valid) {
@@ -21,15 +21,16 @@ module.exports = {
 			// Get angle between the starting coordinates as a reference
 			let refAngle = angleCoords(coords[0],coords[1])
 			let j = 1
-			let curAngle, curDistance
+			let curAngle, curDistance, angleDiff
 			for (var i = 2; i < coords.length; i++) {
 			  curAngle = angleCoords(coords[i-j],coords[i])
 			  curDistance = turf.distance(turf.point(coords[i-j]), turf.point(coords[i])) * 1000
+			  angleDiff = Math.abs(refAngle) - Math.abs(curAngle
 			  if (curDistance <= distance) {
 			    curLineString.push(coords[i])
 			    j++
 			  }
-			  else if (Math.abs(refAngle - curAngle) <= angle) {
+			  else if (angleDiff <= angle && angleDiff >= -angle) {
 			    curLineString.push(coords[i])
 			    refAngle = curAngle
 			    j = 1
@@ -55,7 +56,6 @@ module.exports = {
 			}
 			return headlands
 		})
-
 	}
 }
 
