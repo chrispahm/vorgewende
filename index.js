@@ -5,17 +5,18 @@
 	Polygon (poly, workingWidth, (angle), (distance))- Returns an array consisting of a GeoJSON Polygon for each headland using the working width as its width for the given field
 */
 const GJV = require("geojson-validation")
+const turf = require('@turf/turf')
 
 module.exports = {
 	lineString: function (poly, angle = 30, distance = 10) {
+		// Will contain all headland LineStrings as features
+		let headlands = []
 		// first validate if polygon matches GeoJSON prerequisites
-		GJV.isPolygon(poly, function(valid, err) {
+		GJV.isPolygon(poly.geometry, function(valid, err) {
 			if (!valid) {
 				throw "Invalid Polygon, " + err
 			}
 			const coords = turf.getCoords(poly)[0]
-			// Will contain all headland LineStrings as features
-			let headlands = []
 			// Start with first two coordinates in order to create an initial path
 			let curLineString = [coords[0], coords[1]]
 			// Get angle between the starting coordinates as a reference
@@ -25,7 +26,7 @@ module.exports = {
 			for (var i = 2; i < coords.length; i++) {
 			  curAngle = angleCoords(coords[i-j],coords[i])
 			  curDistance = turf.distance(turf.point(coords[i-j]), turf.point(coords[i])) * 1000
-			  angleDiff = Math.abs(refAngle) - Math.abs(curAngle
+			  angleDiff = Math.abs(refAngle) - Math.abs(curAngle)
 			  if (curDistance <= distance) {
 			    curLineString.push(coords[i])
 			    j++
@@ -54,8 +55,9 @@ module.exports = {
 			else {
 			  headlands.push(turf.lineString(curLineString))
 			}
-			return headlands
+
 		})
+		return headlands
 	}
 }
 

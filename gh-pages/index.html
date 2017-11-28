@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Vorgewende</title>
+  <script src="https://npmcdn.com/@turf/turf@5.0.4/turf.min.js"></script>
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.42.2/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.42.2/mapbox-gl.css' rel='stylesheet' />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+  <script src="../browser/vorgewende.browser.js"></script>
+  <style>
+    html,
+    body {
+      padding: 0px;
+      margin: 0px;
+      height: 100%;
+      widht: 100%;
+    }
+
+    #jsonText {
+      position: fixed;
+      padding-top: 20px;
+      padding-left: 20px;
+      left: 0px;
+      width: 50%;
+      height: 100%;
+      font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+
+      border: none;
+      overflow: auto;
+      outline: none;
+      resize: none;
+
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+    }
+
+    pre,
+    code {
+      height: 100%;
+      width: 100%;
+      margin: 0px;
+      padding: 0px;
+      overflow-x: hidden;
+    }
+
+    #map {
+      position: fixed;
+      right: 0px;
+      width: 50%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="jsonText"></textarea>
+  <div id='map'></div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      center: [7.084334, 50.7267715],
+      zoom: 14,
+      style: 'mapbox://styles/mapbox/streets-v9'
+    });
+
+    var colors = ["#294D4A", "#4A6D7C", "#7690A5", "#79ae98", "#BBE29D", "#9DD5C0", '#B5DCE1', "#D0D1D3", "#B5DCE1"]
+    var block = document.getElementById('jsonText')
+    block.addEventListener('input', function(e) {
+      var polygon = JSON.parse(e.target.value);
+      if (polygon.geometry.type === "Polygon") {
+/*
+        map.addLayer({
+          'id': 'plot',
+          'type': 'line',
+          'source': {
+            type: "geojson",
+            data: polygon
+          },
+          'layout': {},
+          'paint': {
+            'line-color': '#ffffff',
+            'line-width': 10
+          }
+        })
+*/
+        map.fitBounds(turf.bbox(polygon));
+
+        vorgewende.lineString(polygon).forEach((lineString, i) => {
+          map.addLayer({
+            'id': i.toString(),
+            'type': 'line',
+            'source': {
+              type: "geojson",
+              data: lineString
+            },
+            'layout': {},
+            'paint': {
+              'line-color': colors[i],
+              'line-width': 10
+            }
+          })
+        })
+      }
+    });
+
+
+  </script>
+</body>
+
+</html>
