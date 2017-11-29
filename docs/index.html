@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Vorgewende</title>
+  <script src="https://npmcdn.com/@turf/turf@5.0.4/turf.min.js"></script>
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.42.2/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.42.2/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.js'></script>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css' type='text/css' />
+  <script src="../browser/vorgewende.browser.js"></script>
+  <style>
+      * {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    }
+
+    html,
+    body {
+      padding: 0px;
+      margin: 0px;
+      height: 100%;
+      width: 100%;
+    }
+
+    #jsonWrapper{
+      position: fixed;
+      padding: 20px;
+      width: 30%;
+      height: 100%;
+    }
+
+    #jsonText {
+      height: 100%;
+      width: 100%;
+      font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+
+      border: none;
+      overflow: auto;
+      outline: none;
+      resize: none;
+
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+    }
+
+    #map {
+      position: fixed;
+      right: 0px;
+      width: 70%;
+      height: 100%;
+    }
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #4CAF50;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #4CAF50;
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="jsonWrapper"><textarea id="jsonText" placeholder="// Paste a GeoJSON polygon here or click the 'Polygon draw' button on the map to get started"></textarea></div>
+  <div id='map'></div>
+  <div id="slidecontainer">
+    <input type="range" min="1" max="90" value="30" class="slider" id="myRange">
+  </div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      center: [7.084334, 50.7267715],
+      zoom: 15,
+      style: 'mapbox://styles/mapbox/light-v9?optimize=true'
+    });
+
+    var Draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        polygon: true,
+        trash: true
+      }
+    });
+    map.addControl(Draw)
+
+    var colors = ["#1abc9c", "#27ae60", "#3498db", "#f1c40f", "#e74c3c", "#2c3e50", '#95a5a6', "#7f8c8d", "#B5DCE1"]
+    var block = document.getElementById('jsonText')
+    var layers = []
+
+    block.addEventListener('input', function(e) {
+      var polygon = JSON.parse(e.target.value);
+      if (polygon.geometry.type === "Polygon") {
+        layers.forEach(layer => {
+          map.removeLayer(layer)
+        });
+        layers = [];
+        vorgewende.lineString(polygon).forEach(addLayer);
+        map.fitBounds(turf.bbox(polygon), {padding: 60})
+      }
+    })
+
+    map.on('load', function() {
+      map.on('draw.create', function (e) {
+        layers.forEach(layer => {
+          map.removeLayer(layer)
+        });
+        layers = [];
+        vorgewende.lineString(e.features[0]).forEach(addLayer);
+        Draw.delete(e.features[0].id)
+      });
+    });
+
+    function addLayer (geom, i) {
+      var id = Math.random().toString(36).substring(7);
+      map.addLayer({
+        'id': id,
+        'type': 'line',
+        'source': {
+          type: "geojson",
+          data: geom
+        },
+        'layout': {},
+        'paint': {
+          'line-color': colors[i],
+          'line-width': 10
+        }
+      })
+      layers.push(id);
+  }
+  </script>
+</body>
+
+</html>

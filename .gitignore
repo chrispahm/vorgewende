@@ -1,5 +1,6 @@
 bower_components
 node_modules
 *.log
+gh-pages
 .DS_Store
 bundle.js

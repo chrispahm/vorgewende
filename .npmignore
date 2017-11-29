@@ -5,6 +5,8 @@ node_modules
 bundle.js
 test
 test.js
+gh-pages
+docs
 demo/
 .npmignore
 LICENSE.md
