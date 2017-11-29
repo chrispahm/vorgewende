@@ -22,30 +22,49 @@ module.exports = {
 			// Get angle between the starting coordinates as a reference
 			let refAngle = angleCoords(coords[0],coords[1])
 			let j = 1
+			let uncertainPolys = []
 			let curAngle, curDistance, angleDiff
 			for (var i = 2; i < coords.length; i++) {
 			  curAngle = angleCoords(coords[i-j],coords[i])
 			  curDistance = turf.distance(turf.point(coords[i-j]), turf.point(coords[i])) * 1000
 			  angleDiff = Math.abs(refAngle) - Math.abs(curAngle)
-			  if (curDistance <= distance) {
+			  if (curDistance <= distance && angleDiff <= angle && angleDiff >= -angle) {
 			    curLineString.push(coords[i])
 			    j++
 			  }
+				else if (curDistance <= distance && angleDiff >= angle && angleDiff <= -angle) {
+					uncertainPolys.push(coords[i])
+			    j++
+				}
 			  else if (angleDiff <= angle && angleDiff >= -angle) {
+					if (j > 1) {
+						curLineString = curLineString.concat(uncertainPolys)
+						uncertainPolys = []
+						j = 1
+					}
 			    curLineString.push(coords[i])
 			    refAngle = curAngle
-			    j = 1
 			  }
 			  else {
+					console.log(angleDiff, turf.point(coords[i]));
 			    headlands.push(turf.lineString(curLineString))
-			    curLineString = [coords[i-1], coords[i]]
-			    refAngle = curAngle
-			    j = 1
+					if (j > 1 && uncertainPolys.length > 0) {
+						curLineString = []
+						curLineString.push(coords[i - j])
+						curLineString = curLineString.concat(uncertainPolys)
+						curLineString.push(coords[i])
+						uncertainPolys = []
+						j = 1
+					}
+					else {
+						curLineString = [coords[i-1], coords[i]]
+					}
+					refAngle = curAngle
 			  }
 			}
 			// Join headland LineStrings if first and last coordinates are equal,
 			// as in this case the headland was drawn from the "middle" of the headland
-			if (coords[0][0] === coords[coords.length -1][0] && coords[0][1] === coords[coords.length -1][1]) {
+			if (angleDiff <= angle && angleDiff >= -angle) {
 			  headlandPartA = curLineString
 			  headlandPartB = turf.getCoords(headlands[0])
 			  headlandConcat = headlandPartA.concat(headlandPartB)
