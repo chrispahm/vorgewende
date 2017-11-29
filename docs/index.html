@@ -54,32 +54,45 @@
       height: 100%;
     }
     .slider {
+      -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+        position: fixed;
+        top: 140px;
+        right: -26px;
         -webkit-appearance: none;
-        width: 100%;
-        height: 15px;
+        width: 100px;
+        height: 5px;
         border-radius: 5px;
-        background: #d3d3d3;
+        background: white;
         outline: none;
-        opacity: 0.7;
+        opacity: 1;
         -webkit-transition: .2s;
+        box-shadow: 0 0 0 1.5pt rgba(0,0,0,0.1);
         transition: opacity .2s;
+    }
+
+    .slider.second {
+      top: 260px;
     }
 
     .slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        width: 25px;
-        height: 25px;
+        width: 15px;
+        height: 15px;
         border-radius: 50%;
-        background: #4CAF50;
+        background: #1abc9c;
         cursor: pointer;
     }
 
     .slider::-moz-range-thumb {
-        width: 25px;
-        height: 25px;
+        width: 15px;
+        height: 15px;
         border-radius: 50%;
-        background: #4CAF50;
+        background: #1abc9c;
         cursor: pointer;
     }
   </style>
@@ -88,7 +101,8 @@
   <div id="jsonWrapper"><textarea id="jsonText" placeholder="// Paste a GeoJSON polygon here or click the 'Polygon draw' button on the map to get started"></textarea></div>
   <div id='map'></div>
   <div id="slidecontainer">
-    <input type="range" min="1" max="90" value="30" class="slider" id="myRange">
+    <input type="range" min="1" max="90" value="30" title="Maximum turning angle: 30 Deg" class="slider" id="turnAngle">
+    <input type="range" min="1" max="20" value="5" title="Minimum distance between coordinates: 5 m" class="slider second" id="minDist">
   </div>
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ';

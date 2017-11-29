@@ -1,3 +1,3 @@
 var vorgewende = window.vorgewende || {};
-vorgewende = require("../index")
+vorgewende = require("../../index");
 window.vorgewende = vorgewende;

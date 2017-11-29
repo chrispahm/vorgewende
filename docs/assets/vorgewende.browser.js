@@ -1,9 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var vorgewende = window.vorgewende || {};
-vorgewende = require("../index")
+vorgewende = require("../../index");
 window.vorgewende = vorgewende;
 
-},{"../index":2}],2:[function(require,module,exports){
+},{"../../index":2}],2:[function(require,module,exports){
 /*
 	Vorgewende
 	API Methods
@@ -33,7 +33,7 @@ module.exports = {
 			for (var i = 2; i < coords.length; i++) {
 			  curAngle = angleCoords(coords[i-j],coords[i])
 			  curDistance = turf.distance(turf.point(coords[i-j]), turf.point(coords[i])) * 1000
-			  angleDiff = Math.abs(refAngle) - Math.abs(curAngle)
+			  angleDiff = refAngle - curAngle
 			  if (curDistance <= distance && angleDiff <= angle && angleDiff >= -angle) {
 			    curLineString.push(coords[i])
 			    j++
