@@ -2,7 +2,8 @@
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
-Modul zur automatischen Berechnung von Vorgewenden aus GeoJSON Teilflaechen / Module for automatic headland calculation from GeoJSON plots
+Modul zur automatischen Berechnung von Vorgewenden aus GeoJSON Teilflaechen / Module for automatic headland calculation from GeoJSON plots.
+Works in NodeJS and in the browser.
 
 ## Install
 The script is still in beta phase, to install simply clone this repo.
@@ -27,6 +28,16 @@ where
 ```angle``` the maximal allowed turning angle in degrees, defaults to 30 deg
 
 ```minDistance``` the minimum distance in meters between two coordinates used for angle comparison, defaults to 10 m.
+
+#### Example
+```js
+const vorgewende = require('vorgewende')
+const fs = require('fs')
+
+let plot = fs.readFileSync('somePlotPolygonFeature.geojson')
+let headlands = vorgewende.lineString(plot) // will contain all headlands as GeoJSON lineString features
+
+```
 
 #### Returns
 An array of GeoJSON lineString features representing each headland.
