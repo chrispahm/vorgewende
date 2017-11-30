@@ -108,8 +108,8 @@
     mapboxgl.accessToken = 'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ';
     var map = new mapboxgl.Map({
       container: 'map',
-      center: [7.084334, 50.7267715],
-      zoom: 15,
+      center: [8.349727078985305,52.09020843836398],
+      zoom: 16,
       style: 'mapbox://styles/mapbox/light-v9?optimize=true'
     });
 
@@ -133,7 +133,7 @@
           map.removeLayer(layer)
         });
         layers = [];
-        vorgewende.lineString(polygon).forEach(addLayer);
+        vorgewende.lineString(polygon, 30, 10).forEach(addLayer);
         map.fitBounds(turf.bbox(polygon), {padding: 60})
       }
     })
@@ -144,7 +144,7 @@
           map.removeLayer(layer)
         });
         layers = [];
-        vorgewende.lineString(e.features[0]).forEach(addLayer);
+        vorgewende.lineString(e.features[0], 30, 10).forEach(addLayer);
         Draw.delete(e.features[0].id)
       });
     });
@@ -161,7 +161,7 @@
         'layout': {},
         'paint': {
           'line-color': colors[i],
-          'line-width': 10
+          'line-width': 1
         }
       })
       layers.push(id);

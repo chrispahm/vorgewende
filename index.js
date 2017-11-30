@@ -9,6 +9,7 @@ const turf = require('@turf/turf')
 
 module.exports = {
 	lineString: function (poly, angle = 30, distance = 10) {
+		//console.log(angle)
 		// Will contain all headland LineStrings as features
 		let headlands = []
 		// first validate if polygon matches GeoJSON prerequisites
@@ -27,7 +28,7 @@ module.exports = {
 			for (var i = 2; i < coords.length; i++) {
 			  curAngle = angleCoords(coords[i-j],coords[i])
 			  curDistance = turf.distance(turf.point(coords[i-j]), turf.point(coords[i])) * 1000
-			  angleDiff = (refAngle) - (curAngle)
+			  angleDiff = refAngle - (curAngle)
 			  if (curDistance <= distance && angleDiff <= angle && angleDiff >= -angle) {
 			    curLineString.push(coords[i])
 			    j++
@@ -46,6 +47,7 @@ module.exports = {
 			    refAngle = curAngle
 			  }
 			  else {
+			  	//console.log(angleDiff, Draw.add(turf.point(coords[i-1])), coords[i-1], refAngle, curAngle)
 			    headlands.push(turf.lineString(curLineString))
 					if (j > 1 && uncertainPolys.length > 0) {
 						curLineString = []
@@ -63,7 +65,8 @@ module.exports = {
 			}
 			// Join headland LineStrings if first and last coordinates are equal,
 			// as in this case the headland was drawn from the "middle" of the headland
-			if (angleDiff <= angle && angleDiff >= -angle) {
+			let finalAngle = angleCoords(coords[0],coords[1]) - (curAngle)
+			if (finalAngle <= angle && finalAngle >= -angle) {
 			  headlandPartA = curLineString
 			  headlandPartB = turf.getCoords(headlands[0])
 			  headlandConcat = headlandPartA.concat(headlandPartB)

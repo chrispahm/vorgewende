@@ -1,4 +1,10 @@
 {
+  "type": "Feature",
+  "properties": {
+    "name": "37",
+    "id": "37"
+  },
+  "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
@@ -173,3 +179,5 @@
           ]
         ]
       }
+
+ }
