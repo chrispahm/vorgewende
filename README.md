@@ -15,7 +15,8 @@ npm install vorgewende --save
 
 ## Usage
 
-[![NPM](https://nodei.co/npm/vorgewende.png)](https://www.npmjs.com/package/vorgewende)
+#### [Click here for an online demo](https://chrispahm.github.io/vorgewende)
+
 The script (will) contain the following API methods:
 ### ```lineString(polygon, (angle), (minDistance))```
 
