@@ -27,7 +27,7 @@ module.exports = {
 			for (var i = 2; i < coords.length; i++) {
 			  curAngle = angleCoords(coords[i-j],coords[i])
 			  curDistance = turf.distance(turf.point(coords[i-j]), turf.point(coords[i])) * 1000
-			  angleDiff = refAngle - curAngle
+			  angleDiff = (refAngle) - (curAngle)
 			  if (curDistance <= distance && angleDiff <= angle && angleDiff >= -angle) {
 			    curLineString.push(coords[i])
 			    j++
