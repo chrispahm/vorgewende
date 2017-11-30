@@ -67,7 +67,6 @@ module.exports = {
 			// as in this case the headland was drawn from the "middle" of the headland
 			let finalAngle = angleCoords(coords[0],coords[1]) - (curAngle)
 			if (finalAngle <= angle && finalAngle >= -angle) {
-				//console.log(finalAngle, Draw.add(turf.point(coords[i-1])), coords[i-1], angleCoords(coords[0],coords[1]), curAngle)
 			  headlandPartA = curLineString
 			  headlandPartB = turf.getCoords(headlands[0])
 			  headlandConcat = headlandPartA.concat(headlandPartB)
@@ -75,6 +74,7 @@ module.exports = {
 			}
 			// Push the last headland into the array if the headlands are not connected
 			else {
+				//console.log(finalAngle, Draw.add(turf.point(coords[i-1])), coords[i-1], angleCoords(coords[0],coords[1]), curAngle)
 			  headlands.push(turf.lineString(curLineString))
 			}
 
