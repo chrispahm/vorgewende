@@ -10,6 +10,7 @@
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.4/mapbox-gl-draw.css' type='text/css' />
   <script src="assets/vorgewende.browser.js"></script>
+  <script src="assets/examples.js"></script>
   <style>
       * {
     box-sizing: border-box;
@@ -114,9 +115,27 @@
       cursor: pointer;
     }
 
+    #examples {
+      position: fixed;
+      top: 12px;
+      right: 80px;
+      z-index: 99;
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      border-radius: 0px;
+      font-family: Courier New;
+      color: #000000;
+      font-size: 14px;
+      background: #ffffff;
+      padding: 5px 10px 5px 10px;
+      border: solid #18191a 2px;
+      text-decoration: none;
+    }
+
   </style>
 </head>
 <body>
+  <button id="examples" onclick="getExample()">Example</button>
   <div id="jsonWrapper"><textarea id="jsonText" placeholder="// Paste a GeoJSON polygon here or click the 'Polygon draw' button on the map to get started"></textarea></div>
   <div id='map'></div>
   <div id="slidecontainer">
@@ -129,7 +148,7 @@
       container: 'map',
       center: [8.349727078985305,52.09020843836398],
       zoom: 16,
-      style: 'mapbox://styles/mapbox/light-v9?optimize=true'
+      style: 'mapbox://styles/mapbox/satellite-v9?optimize=true'
     });
 
     var Draw = new MapboxDraw({
@@ -178,7 +197,7 @@
         map.removeLayer(layer)
       });
       layers = [];
-      Draw.delete(Draw.getAll());
+      Draw.getAll().features.forEach(e => Draw.delete(e.id))
       vorgewende.lineString(polygon, Number(turnAngle.value), Number(minDist.value)).forEach((geom, i) => {
         var id = Math.random().toString(36).substring(7);
         map.addLayer({
@@ -190,12 +209,27 @@
           },
           'layout': {},
           'paint': {
-            'line-color': colors[i],
-            'line-width': 2
+            'line-color': pastelColors(),
+            'line-width': 8
           }
         })
         layers.push(id);
       });
+
+      function pastelColors(){
+          var r = (Math.round(Math.random()* 127) + 127).toString(16);
+          var g = (Math.round(Math.random()* 127) + 127).toString(16);
+          var b = (Math.round(Math.random()* 127) + 127).toString(16);
+          return '#' + r + g + b;
+      }
+
+  }
+
+  function getExample() {
+    let number = Math.floor(Math.random() * 79);
+    polygon = examplePlots[number]
+    addLayer();
+    map.fitBounds(turf.bbox(polygon), {padding: 60})
   }
   </script>
 </body>
