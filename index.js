@@ -47,7 +47,8 @@ module.exports = {
 			    refAngle = curAngle
 			  }
 			  else {
-			  	console.log(angleDiff, coords[i-1], refAngle, curAngle, i-1)
+			  	/*
+					console.log(angleDiff, coords[i-1], refAngle, curAngle, i-1)
 					Draw.add(turf.point(coords[i-1]))
 					var el = document.createElement('div');
   				el.className = 'marker';
@@ -56,6 +57,7 @@ module.exports = {
 					  .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
 					  .setHTML('<h3>' + (i-1) + '</h3><p>Eingangswinkel: ' +  refAngle + '\n Ausgangwinkel: ' + curAngle + '\n Winkeldifferenz: ' + angleDiff + '</p>'))
 					  .addTo(map);
+					*/
 			    headlands.push(turf.lineString(curLineString))
 					if (j > 1 && uncertainPolys.length > 0) {
 						curLineString = []
@@ -82,6 +84,7 @@ module.exports = {
 			}
 			// Push the last headland into the array if the headlands are not connected
 			else {
+				/*
 				console.log(finalAngle, coords[i-1], angleCoords(coords[0],coords[1]), curAngle, i-1)
 				Draw.add(turf.point(coords[i-1]))
 				var el = document.createElement('div');
@@ -91,6 +94,7 @@ module.exports = {
 					.setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
 					.setHTML('<h3>' + (i-1) + '</h3><p>Eingangswinkel: ' +  angleCoords(coords[0],coords[1]) + '\n Ausgangwinkel: ' + curAngle + '\n Winkeldifferenz: ' + finalAngle + '</p>'))
 					.addTo(map);
+				*/
 			  headlands.push(turf.lineString(curLineString))
 			}
 
