@@ -34,7 +34,7 @@ module.exports = {
 			for (var i = 2; i < coords.length; i++) {
 			  curAngle = angleCoords(coords[i-j],coords[i])
 			  curDistance = turf.distance(turf.point(coords[i-j]), turf.point(coords[i])) * 1000
-			  angleDiff = refAngle - (curAngle)
+			  angleDiff = angleBetCoords(refAngle, curAngle)
 			  if (curDistance <= distance && angleDiff <= angle && angleDiff >= -angle) {
 			    curLineString.push(coords[i])
 			    j++
@@ -53,7 +53,15 @@ module.exports = {
 			    refAngle = curAngle
 			  }
 			  else {
-			  	console.log(angleDiff, Draw.add(turf.point(coords[i-1])), coords[i-1], refAngle, curAngle)
+			  	console.log(angleDiff, coords[i-1], refAngle, curAngle, i-1)
+					Draw.add(turf.point(coords[i-1]))
+					var el = document.createElement('div');
+  				el.className = 'marker';
+					new mapboxgl.Marker(el)
+					  .setLngLat(coords[i-1])
+					  .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+					  .setHTML('<h3>' + (i-1) + '</h3><p>Eingangswinkel: ' +  refAngle + '\n Ausgangwinkel: ' + curAngle + '\n Winkeldifferenz: ' + angleDiff + '</p>'))
+					  .addTo(map);
 			    headlands.push(turf.lineString(curLineString))
 					if (j > 1 && uncertainPolys.length > 0) {
 						curLineString = []
@@ -71,7 +79,7 @@ module.exports = {
 			}
 			// Join headland LineStrings if first and last coordinates are equal,
 			// as in this case the headland was drawn from the "middle" of the headland
-			let finalAngle = angleCoords(coords[0],coords[1]) - (curAngle)
+			let finalAngle = angleBetCoords(angleCoords(coords[0],coords[1]), curAngle)
 			if (finalAngle <= angle && finalAngle >= -angle) {
 			  headlandPartA = curLineString
 			  headlandPartB = turf.getCoords(headlands[0])
@@ -80,7 +88,15 @@ module.exports = {
 			}
 			// Push the last headland into the array if the headlands are not connected
 			else {
-				console.log(finalAngle, Draw.add(turf.point(coords[i-1])), coords[i-1], angleCoords(coords[0],coords[1]), curAngle)
+				console.log(finalAngle, coords[i-1], angleCoords(coords[0],coords[1]), curAngle, i-1)
+				Draw.add(turf.point(coords[i-1]))
+				var el = document.createElement('div');
+				el.className = 'marker';
+				new mapboxgl.Marker(el)
+					.setLngLat(coords[i-1])
+					.setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+					.setHTML('<h3>' + (i-1) + '</h3><p>Eingangswinkel: ' +  angleCoords(coords[0],coords[1]) + '\n Ausgangwinkel: ' + curAngle + '\n Winkeldifferenz: ' + finalAngle + '</p>'))
+					.addTo(map);
 			  headlands.push(turf.lineString(curLineString))
 			}
 
@@ -91,6 +107,13 @@ module.exports = {
 
 function angleCoords(p1,p2) {
   return Math.atan2(p2[1] - p1[1], p2[0] - p1[0]) * 180 / Math.PI
+}
+
+function angleBetCoords(a,b) {
+	let difference = a - (b)
+	if (difference < - 180) difference += 360
+	else if (difference > 180) difference -= 360
+	return difference
 }
 
 },{"@turf/turf":97,"geojson-validation":116}],3:[function(require,module,exports){

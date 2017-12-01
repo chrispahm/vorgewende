@@ -95,6 +95,25 @@
         background: #1abc9c;
         cursor: pointer;
     }
+
+    .mapboxgl-popup {
+      max-width: 200px;
+    }
+
+    .mapboxgl-popup-content {
+      text-align: center;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .marker {
+      background-image: url('mapbox-icon.png');
+      background-size: cover;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
@@ -102,7 +121,7 @@
   <div id='map'></div>
   <div id="slidecontainer">
     <input type="range" min="1" max="90" value="30" title="Maximum turning angle: 30 Deg" class="slider" id="turnAngle">
-    <input type="range" min="1" max="20" value="5" title="Minimum distance between coordinates: 5 m" class="slider second" id="minDist">
+    <input type="range" min="1" max="20" value="10" title="Minimum distance between coordinates: 10 m" class="slider second" id="minDist">
   </div>
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoidG9mZmkiLCJhIjoiY2l3cXRnNHplMDAxcTJ6cWY1YWp5djBtOSJ9.mBYmcCSgNdaRJ1qoHW5KSQ';
@@ -125,46 +144,58 @@
     var colors = ["#1abc9c", "#27ae60", "#3498db", "#f1c40f", "#e74c3c", "#2c3e50", '#95a5a6', "#7f8c8d", "#B5DCE1"]
     var block = document.getElementById('jsonText')
     var layers = []
+    var turnAngle = document.getElementById('turnAngle')
+    var minDist = document.getElementById('minDist')
+    var polygon;
 
     block.addEventListener('input', function(e) {
-      var polygon = JSON.parse(e.target.value);
+      polygon = JSON.parse(e.target.value);
       if (polygon.geometry.type === "Polygon") {
-        layers.forEach(layer => {
-          map.removeLayer(layer)
-        });
-        layers = [];
-        vorgewende.lineString(polygon, 30, 10).forEach(addLayer);
+        addLayer();
         map.fitBounds(turf.bbox(polygon), {padding: 60})
       }
     })
 
     map.on('load', function() {
       map.on('draw.create', function (e) {
-        layers.forEach(layer => {
-          map.removeLayer(layer)
-        });
-        layers = [];
-        vorgewende.lineString(e.features[0], 30, 10).forEach(addLayer);
+        polygon = e.features[0]
+        addLayer();
         Draw.delete(e.features[0].id)
       });
     });
 
-    function addLayer (geom, i) {
-      var id = Math.random().toString(36).substring(7);
-      map.addLayer({
-        'id': id,
-        'type': 'line',
-        'source': {
-          type: "geojson",
-          data: geom
-        },
-        'layout': {},
-        'paint': {
-          'line-color': colors[i],
-          'line-width': 1
-        }
-      })
-      layers.push(id);
+    turnAngle.addEventListener('change', changeSlider);
+    minDist.addEventListener('change', changeSlider);
+
+    function changeSlider() {
+      turnAngle.title = "Maximum turning angle: " + turnAngle.value +" Deg";
+      minDist.title = "Minimum distance between coordinates: " + minDist.value +" m";
+      if (polygon !== undefined) addLayer();
+    }
+
+    function addLayer () {
+      layers.forEach(layer => {
+        map.removeLayer(layer)
+      });
+      layers = [];
+      Draw.delete(Draw.getAll());
+      vorgewende.lineString(polygon, Number(turnAngle.value), Number(minDist.value)).forEach((geom, i) => {
+        var id = Math.random().toString(36).substring(7);
+        map.addLayer({
+          'id': id,
+          'type': 'line',
+          'source': {
+            type: "geojson",
+            data: geom
+          },
+          'layout': {},
+          'paint': {
+            'line-color': colors[i],
+            'line-width': 2
+          }
+        })
+        layers.push(id);
+      });
   }
   </script>
 </body>
